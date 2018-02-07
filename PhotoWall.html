@@ -147,6 +147,46 @@
 
         }
 
+        //触摸控制
+        document.addEventListener('touchstart',touchdown);
+        document.addEventListener('touchend',touchend);
+        document.addEventListener('touchmove',touchmove);
+        
+        function touchdown(ev) {
+            // console.log("touchdown");
+            isMuseDown = true;
+            mx = (ev.clientX/width)*2-1;
+            my = -(ev.clientY/height)*2+1;
+            mouse2D.x = (ev.clientX/width)*2-1;
+            mouse2D.y = -(ev.clientY/height)*2+1;
+            raycaster.setFromCamera(mouse2D,camera);
+            var intersects = raycaster.intersectObjects(scene.children);
+            if (intersects.length){
+                console.log("click!!");
+                camera.position.x = intersects[0].object.position.x > 0 ? intersects[0].object.position.x - 50:intersects[0].object.position.x+50;
+                camera.position.z = intersects[0].object.position.z > 0 ? intersects[0].object.position.z - 50:intersects[0].object.position.z+50;
+                // camera.lookAt(intersects[0].object.position.x,intersects[0].object.position.y,intersects[0].object.position.z);
+            }
+        }
+        function touchend(ev) {
+            // console.log("touchend");
+            isMuseDown = false;
+        }
+        function touchmove(ev) {
+            // console.log("touchmove");
+            // ev.preventDefault();
+            if (isMuseDown) {
+                var mx_ = (ev.clientX / width) * 2 - 1;
+                var my_ = -(ev.clientY / height) * 2 + 1;
+                var mouseStart = new THREE.Vector3(mx, my, 0.5);
+                var mouseEnd = new THREE.Vector3(mx_, my_, 0.5);
+                moveVector.crossVectors(mouseStart, mouseEnd);
+                console.log("mouseEnd:" + mx_+":"+my_);
+                console.log("touchmove:" + moveVector);
+            }
+        }
+        
+
         function threeStart() {
             initThree();
             initCamera();
