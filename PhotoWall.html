@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>PhotoWall</title>
-    <!--<script src="https://unpkg.com/three" data-ke-src="https://unpkg.com/three"></script>-->
     <script src="js/three.js" data-ke-src="js/three.js"></script>
     <script src="js/Tween.js"></script>
+
     <style type="text/css">
         div#canvas-frame{
             border: none;
@@ -119,16 +119,7 @@
             my = -(ev.clientY/height)*2+1;
             console.log("mx:"+mx+" my:"+my);
 
-            mouse2D.x = (ev.clientX/width)*2-1;
-            mouse2D.y = -(ev.clientY/height)*2+1;
-            raycaster.setFromCamera(mouse2D,camera);
-            var intersects = raycaster.intersectObjects(scene.children);
-            if (intersects.length){
-                console.log("click!!");
-                camera.position.x = intersects[0].object.position.x > 0 ? intersects[0].object.position.x - 50:intersects[0].object.position.x+50;
-                camera.position.z = intersects[0].object.position.z > 0 ? intersects[0].object.position.z - 50:intersects[0].object.position.z+50;
-                // camera.lookAt(intersects[0].object.position.x,intersects[0].object.position.y,intersects[0].object.position.z);
-            }
+
         }
         function move(ev) {
             if (isMuseDown){
@@ -144,19 +135,28 @@
         function mouseup(ev) {
             isMuseDown = false;
             // autoTimer = setTimeout(autoRender,4000);
-
+            mouse2D.x = (ev.clientX/width)*2-1;
+            mouse2D.y = -(ev.clientY/height)*2+1;
+            raycaster.setFromCamera(mouse2D,camera);
+            var intersects = raycaster.intersectObjects(scene.children);
+            if (intersects.length){
+                console.log("click!!");
+                camera.position.x = intersects[0].object.position.x > 0 ? intersects[0].object.position.x - 50:intersects[0].object.position.x+50;
+                camera.position.z = intersects[0].object.position.z > 0 ? intersects[0].object.position.z - 50:intersects[0].object.position.z+50;
+                // camera.lookAt(intersects[0].object.position.x,intersects[0].object.position.y,intersects[0].object.position.z);
+            }
         }
 
         //触摸控制
         document.addEventListener('touchstart',touchdown);
         document.addEventListener('touchend',touchend);
         document.addEventListener('touchmove',touchmove);
-        
+
         function touchdown(ev) {
             // console.log("touchdown");
             isMuseDown = true;
-            mx = (ev.targetTouches[0].pageX)*2-1;
-            my = -(ev.targetTouches[0].pageY)*2+1;
+            // mx = (ev.targetTouches[0].pageX)*2-1;
+            my = -(ev.targetTouches[0].clientY/height)*2+1;
             mouse2D.x = (ev.targetTouches[0].pageX)*2-1;
             mouse2D.y = -(ev.targetTouches[0].pageY)*2+1;
             raycaster.setFromCamera(mouse2D,camera);
@@ -171,21 +171,30 @@
         function touchend(ev) {
             // console.log("touchend");
             isMuseDown = false;
+            mouse2D.x = (ev.clientX/width)*2-1;
+            mouse2D.y = -(ev.clientY/height)*2+1;
+            raycaster.setFromCamera(mouse2D,camera);
+            var intersects = raycaster.intersectObjects(scene.children);
+            if (intersects.length){
+                console.log("click!!");
+                camera.position.x = intersects[0].object.position.x > 0 ? intersects[0].object.position.x - 50:intersects[0].object.position.x+50;
+                camera.position.z = intersects[0].object.position.z > 0 ? intersects[0].object.position.z - 50:intersects[0].object.position.z+50;
+                // camera.lookAt(intersects[0].object.position.x,intersects[0].object.position.y,intersects[0].object.position.z);
+            }
         }
         function touchmove(ev) {
             // console.log("touchmove");
             ev.preventDefault();
             if (isMuseDown) {
-                var mx_ = (ev.targetTouches[0].pageX / width) * 2 - 1;
-                var my_ = -(ev.targetTouches[0].pageY  / height) * 2 + 1;
-                var mouseStart = new THREE.Vector3(mx, my, 0.5);
-                var mouseEnd = new THREE.Vector3(mx_, my_, 0.5);
-                moveVector.crossVectors(mouseStart, mouseEnd);
-                console.log("mouseEnd:" + ev.targetTouches[0]+":"+my_);
-                console.log("touchmove:" + moveVector);
+                var my_ = -(ev.targetTouches[0].clientY  / height) * 2 + 1;
+
+                moveVector.y = my_ - my;
+                console.log("mouseEnd:" + my+" ==to== "+my_);
+                // console.log("touchmove:" + moveVector.y);
             }
         }
-        
+
+
 
         function threeStart() {
             initThree();
@@ -200,5 +209,6 @@
 </head>
 <body onload="threeStart()">
     <div id="canvas-frame"></div>
+    <script type="text/javascript" src="js/hovertreesnow.js"></script>
 </body>
 </html>
