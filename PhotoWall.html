@@ -155,10 +155,10 @@
         function touchdown(ev) {
             // console.log("touchdown");
             isMuseDown = true;
-            mx = (ev.clientX/width)*2-1;
-            my = -(ev.clientY/height)*2+1;
-            mouse2D.x = (ev.clientX/width)*2-1;
-            mouse2D.y = -(ev.clientY/height)*2+1;
+            mx = (ev.targetTouches[0].pageX)*2-1;
+            my = -(ev.targetTouches[0].pageY)*2+1;
+            mouse2D.x = (ev.targetTouches[0].pageX)*2-1;
+            mouse2D.y = -(ev.targetTouches[0].pageY)*2+1;
             raycaster.setFromCamera(mouse2D,camera);
             var intersects = raycaster.intersectObjects(scene.children);
             if (intersects.length){
@@ -174,14 +174,14 @@
         }
         function touchmove(ev) {
             // console.log("touchmove");
-            // ev.preventDefault();
+            ev.preventDefault();
             if (isMuseDown) {
-                var mx_ = (ev.clientX / width) * 2 - 1;
-                var my_ = -(ev.clientY / height) * 2 + 1;
+                var mx_ = (ev.targetTouches[0].pageX / width) * 2 - 1;
+                var my_ = -(ev.targetTouches[0].pageY  / height) * 2 + 1;
                 var mouseStart = new THREE.Vector3(mx, my, 0.5);
                 var mouseEnd = new THREE.Vector3(mx_, my_, 0.5);
                 moveVector.crossVectors(mouseStart, mouseEnd);
-                console.log("mouseEnd:" + mx_+":"+my_);
+                console.log("mouseEnd:" + ev.targetTouches[0]+":"+my_);
                 console.log("touchmove:" + moveVector);
             }
         }
